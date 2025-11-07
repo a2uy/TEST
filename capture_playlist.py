@@ -2,6 +2,7 @@ import asyncio
 from playwright.async_api import async_playwright
 import os
 import datetime
+from urllib.parse import urljoin
 
 # ✅ Channel list (name + ID only)
 channels = {
@@ -22,16 +23,19 @@ async def fetch_channel_url(playwright, name, cid, base_url):
     page = await context.new_page()
 
     try:
-        # 🔥 Use Playwright's request API (no browser UI)
         response = await page.request.get(url)
         text = await response.text()
 
-        # find valid m3u8 link in the response text
         if ".m3u8" in text:
             lines = [line.strip() for line in text.splitlines() if ".m3u8" in line]
             final_url = lines[-1] if lines else None
+
+            # 🧠 If relative URL (no http/https), prepend base
+            if final_url and not final_url.startswith("http"):
+                final_url = urljoin(url, final_url)
+
             if final_url:
-                print(f"✅ Captured for {name}")
+                print(f"✅ Captured full URL for {name}")
                 return final_url
         else:
             print(f"⚠️ No m3u8 token found for {name}")
@@ -63,11 +67,10 @@ async def main():
                 playlist_lines.append(f'#EXTINF:-1 tvg-logo="" group-title="Bengali",{name}')
                 playlist_lines.append("# Failed to capture token")
 
-    # write the updated playlist
     with open("playlist.m3u", "w", encoding="utf-8") as f:
         f.write("\n".join(playlist_lines))
 
-    print("🎉 playlist.m3u updated successfully!")
+    print("🎉 playlist.m3u updated successfully with full URLs!")
 
 if __name__ == "__main__":
     asyncio.run(main())
