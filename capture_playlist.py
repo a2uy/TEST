@@ -13,44 +13,60 @@ channels = {
 }
 
 async def fetch_channel_url(playwright, name, cid, base_url):
+    """Tokenized m3u8 capture using direct HTTP request"""
     url = f"{base_url}{cid}"
+    print(f"🎯 Fetching {name} ...")
+
     browser = await playwright.chromium.launch(headless=True)
-    page = await browser.new_page()
+    context = await browser.new_context()
+    page = await context.new_page()
 
-    captured = None
+    try:
+        # 🔥 Use Playwright's request API (no browser UI)
+        response = await page.request.get(url)
+        text = await response.text()
 
-    async def on_request(request):
-        nonlocal captured
-        req = request.url
-        if ".m3u8" in req and "token=" in req:
-            captured = req
-
-    page.on("request", on_request)
-    await page.goto(url, wait_until="networkidle")
-    await asyncio.sleep(5)
-    await browser.close()
-    return captured
+        # find valid m3u8 link in the response text
+        if ".m3u8" in text:
+            lines = [line.strip() for line in text.splitlines() if ".m3u8" in line]
+            final_url = lines[-1] if lines else None
+            if final_url:
+                print(f"✅ Captured for {name}")
+                return final_url
+        else:
+            print(f"⚠️ No m3u8 token found for {name}")
+            return None
+    except Exception as e:
+        print(f"❌ Error fetching {name}: {e}")
+        return None
+    finally:
+        await browser.close()
 
 async def main():
-    base_url = os.getenv("STREAM_BASE_URL")  # ✅ SECRET থেকে নেওয়া
+    base_url = os.getenv("STREAM_BASE_URL")  # ✅ from GitHub Secret
     if not base_url:
         raise Exception("STREAM_BASE_URL not found in environment variables!")
 
-    playlist_lines = ["#EXTM3U", f"# Auto-updated: {datetime.datetime.utcnow()} UTC\n"]
+    playlist_lines = [
+        "#EXTM3U",
+        f"# Auto-updated: {datetime.datetime.utcnow()} UTC",
+        "",
+    ]
 
     async with async_playwright() as p:
         for name, cid in channels.items():
-            print(f"🎯 Fetching {name} ...")
             link = await fetch_channel_url(p, name, cid, base_url)
             if link:
                 playlist_lines.append(f'#EXTINF:-1 tvg-logo="" group-title="Bengali",{name}')
                 playlist_lines.append(link)
-                print(f"✅ {name} OK")
             else:
-                print(f"❌ {name} Failed")
+                playlist_lines.append(f'#EXTINF:-1 tvg-logo="" group-title="Bengali",{name}')
+                playlist_lines.append("# Failed to capture token")
 
+    # write the updated playlist
     with open("playlist.m3u", "w", encoding="utf-8") as f:
         f.write("\n".join(playlist_lines))
+
     print("🎉 playlist.m3u updated successfully!")
 
 if __name__ == "__main__":
