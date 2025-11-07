@@ -1,13 +1,13 @@
 #EXTM3U
-# Auto-updated: 2025-11-07 09:34:17.391555 UTC
+# Auto-updated: 2025-11-07 09:37:21.119070 UTC
 
 #EXTINF:-1 tvg-logo="" group-title="Bengali",T Sports
-tracks-v1a1/mono.ts.m3u8?e=1762515261&token=425a0589d5341810ffb10c18161a8e1e&u=ef3dd85c-c300-4e09-b2f1-9138aec7211b
+https://bostaflix.vercel.app/api/tracks-v1a1/mono.ts.m3u8?e=1762515443&token=56a6b9e334ab89055531e5bea161e267&u=ef3dd85c-c300-4e09-b2f1-9138aec7211b
 #EXTINF:-1 tvg-logo="" group-title="Bengali",Tara Jalsha
-tracks-v1a1/mono.ts.m3u8?e=1762515265&token=561b46279c2c290b1b0bc4305a0e1208&u=ef3dd85c-c300-4e09-b2f1-9138aec7211b
+https://bostaflix.vercel.app/api/tracks-v1a1/mono.ts.m3u8?e=1762515446&token=9155a6f00c6dd6c94442416c9c07c6ad&u=ef3dd85c-c300-4e09-b2f1-9138aec7211b
 #EXTINF:-1 tvg-logo="" group-title="Bengali",Discovery Bangla
 # Failed to capture token
 #EXTINF:-1 tvg-logo="" group-title="Bengali",Nat Geo
-tracks-v1a1/mono.ts.m3u8?e=1762515271&token=ff4129876e206e9a781deffc284c8391&u=ef3dd85c-c300-4e09-b2f1-9138aec7211b
+https://bostaflix.vercel.app/api/tracks-v1a1/mono.ts.m3u8?e=1762515452&token=821a157978f46b5c35aa065e6d627a8d&u=ef3dd85c-c300-4e09-b2f1-9138aec7211b
 #EXTINF:-1 tvg-logo="" group-title="Bengali",Tara Plus
-tracks-v1a1/mono.ts.m3u8?e=1762515273&token=6624a5a89aa8fa8767c715eb487e209c&u=ef3dd85c-c300-4e09-b2f1-9138aec7211b
+https://bostaflix.vercel.app/api/tracks-v1a1/mono.ts.m3u8?e=1762515458&token=88a569c18db3177dbcfae57c61cfe193&u=ef3dd85c-c300-4e09-b2f1-9138aec7211b
